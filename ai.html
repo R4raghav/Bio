@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shrashti AI - Health & Pharmacy Assistant</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f0f4f8;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- LOGIN PAGE STYLES --- */
+        #loginPage {
+            width: 90%;
+            max-width: 380px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 40px 30px;
+            text-align: center;
+            border: 2px solid #e1e8ed;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            animation: fadeIn 0.5s ease-in-out;
+            position: relative;
+        }
+
+        .login-header h2 {
+            color: #f5576c;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .login-header p {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .login-avatar {
+            font-size: 60px;
+            margin: 10px 0;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            text-align: left;
+        }
+
+        .input-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            margin-left: 5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 1px solid #cbd5e1;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+            background: #f8fafc;
+        }
+
+        .input-group input:focus {
+            border-color: #f5576c;
+            box-shadow: 0 0 8px rgba(245, 87, 108, 0.2);
+            background: white;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 10px rgba(245, 87, 108, 0.3);
+            margin-top: 10px;
+        }
+
+        .login-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* --- CHAT PAGE STYLES --- */
+        #chatPage {
+            width: 90%;
+            max-width: 420px;
+            height: 85vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            z-index: 10;
+            border: 2px solid #e1e8ed;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-in-out;
+            position: relative;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-header .avatar {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .protocol-status {
+            font-size: 11px;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-top: 5px;
+        }
+
+        /* LOGOUT BUTTON */
+        .logout-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+        .logout-btn:active {
+            transform: scale(0.9);
+        }
+
+        .chat-box {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            scroll-behavior: smooth;
+        }
+
+        .chat-box::-webkit-scrollbar { width: 6px; }
+        .chat-box::-webkit-scrollbar-thumb { background: #f093fb; border-radius: 10px; }
+
+        .message {
+            max-width: 85%;
+            padding: 12px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .message b {
+            color: #d81b60;
+            font-weight: 600;
+        }
+
+        .message br {
+            content: "";
+            margin: 2em;
+            display: block;
+            font-size: 24%;
+        }
+
+        .bot-msg {
+            background: #f1f3f5;
+            color: #333;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            border: 1px solid #e9ecef;
+        }
+
+        .user-msg {
+            background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 2px 8px rgba(245, 87, 108, 0.3);
+        }
+        
+        .user-msg b {
+            color: #fff;
+        }
+
+        .error-msg {
+            background: #ffebee;
+            color: #c62828;
+            align-self: center;
+            border-radius: 10px;
+            font-size: 13px;
+            width: 95%;
+            border: 1px solid #ef9a9a;
+            text-align: center;
+        }
+
+        .typing-indicator {
+            font-size: 12px;
+            color: #f5576c;
+            align-self: flex-start;
+            margin-left: 10px;
+            display: none;
+            font-style: italic;
+            font-weight: 600;
+        }
+
+        .input-area {
+            display: flex;
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #e1e8ed;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 1px solid #cbd5e1;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+            background: #f8fafc;
+        }
+
+        .input-area input:focus {
+            border-color: #f5576c;
+            background: white;
+            box-shadow: 0 0 8px rgba(245, 87, 108, 0.2);
+        }
+
+        .input-area button {
+            background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+            color: white;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 10px rgba(245, 87, 108, 0.3);
+        }
+
+        .input-area button:active {
+            transform: scale(0.92);
+        }
+
+        .dev-credit {
+            text-align: center;
+            font-size: 11px;
+            color: #888;
+            padding: 8px;
+            font-weight: 600;
+            background: #f8fafc;
+            border-top: 1px solid #e1e8ed;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loginPage">
+        <div class="login-avatar">👩🏻‍⚕️</div>
+        <div class="login-header">
+            <h2>Shrashti AI</h2>
+            <p>Smart Health & Pharmacy Assistant</p>
+        </div>
+        
+        <div class="input-group">
+            <label for="userName">आपका शुभ नाम?</label>
+            <input type="text" id="userName" placeholder="यहाँ अपना नाम लिखें..." onkeypress="handleLoginEnter(event)">
+        </div>
+        
+        <button class="login-btn" onclick="startChat()">चैट शुरू करें ✨</button>
+        
+        <div style="margin-top: 15px; font-size: 10px; color: #aaa;">
+            Developed by Raghav Kushwaha
+        </div>
+    </div>
+
+    <div id="chatPage">
+        <div class="chat-header">
+            <button class="logout-btn" onclick="exitChat()">Exit 🚪</button>
+            <div class="header-top">
+                <div class="avatar">👩🏻‍⚕️</div>
+                Shrashti AI
+            </div>
+            <div class="protocol-status">Health & Pharmacy Assistant 🟢</div>
+        </div>
+        
+        <div class="chat-box" id="chatBox"></div>
+        
+        <div class="typing-indicator" id="typing">सृष्टि टाइप कर रही है... ✨</div>
+        
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="अपनी समस्या या दवाई का नाम लिखें..." onkeypress="handleChatEnter(event)">
+            <button onclick="sendMessage()" id="sendBtn">➤</button>
+        </div>
+
+        <div class="dev-credit">
+            Developed by Raghav Kushwaha
+        </div>
+    </div>
+
+    <script>
+        const GROQ_API_KEY = "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";
+        const API_URL = "https://api.groq.com/openai/v1/chat/completions";
+        
+        let chatHistory = [];
+        let currentUserName = "";
+
+        // --- LOCAL STORAGE (HISTORY) LOGIC ---
+        window.onload = () => {
+            const savedName = localStorage.getItem('shrashti_username');
+            const savedHistory = localStorage.getItem('shrashti_chat_history');
+
+            if (savedName && savedHistory) {
+                // Restore Session
+                currentUserName = savedName;
+                chatHistory = JSON.parse(savedHistory);
+                
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('chatPage').style.display = 'flex';
+                
+                renderHistory();
+            }
+        };
+
+        function saveSession() {
+            localStorage.setItem('shrashti_username', currentUserName);
+            localStorage.setItem('shrashti_chat_history', JSON.stringify(chatHistory));
+        }
+
+        function exitChat() {
+            if(confirm("क्या आप चैट बंद करना चाहते हैं? इससे पुरानी चैट डिलीट हो जाएगी।")) {
+                localStorage.removeItem('shrashti_username');
+                localStorage.removeItem('shrashti_chat_history');
+                location.reload();
+            }
+        }
+
+        function renderHistory() {
+            const chatBox = document.getElementById('chatBox');
+            chatBox.innerHTML = ''; 
+            
+            chatHistory.forEach(msg => {
+                if (msg.role === 'user') {
+                    appendMessageToDOM(msg.content, 'user-msg');
+                } else if (msg.role === 'assistant') {
+                    appendMessageToDOM(msg.content, 'bot-msg');
+                }
+            });
+            scrollToBottom();
+        }
+        // -------------------------------------
+
+        function handleLoginEnter(event) {
+            if (event.key === 'Enter') {
+                startChat();
+            }
+        }
+
+        function startChat() {
+            const nameInput = document.getElementById('userName').value.trim();
+            if (!nameInput) {
+                alert("कृपया अपना नाम दर्ज करें!");
+                return;
+            }
+
+            currentUserName = nameInput;
+
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('chatPage').style.display = 'flex';
+
+            const optimizedPrompt = `Role: Shrashti, Friendly AI Health & Pharmacy Assistant for the general public.
+Language: Conversational Hindi/Hinglish.
+Tone: Caring, professional, helpful, and sweet.
+USER'S NAME: ${currentUserName}. Address the user warmly.
+
+STRICT BEHAVIOR RULES:
+1. SYMPTOM CHECKER & FOLLOW-UP: If the user mentions a symptom (e.g., pain, fever), DO NOT give a final answer immediately. First, ask 1 or 2 relevant follow-up questions (e.g., "क्या कोई और लक्षण है?", "दर्द कब से है?").
+2. POSSIBLE CAUSES: Once you have enough info, suggest possible reasons/causes for their problem.
+3. MEDICINE (OTC): Suggest only safe, general, Over-The-Counter (OTC) medicines for temporary relief. Explain their basic mechanism simply. 
+4. LAB TESTS: Suggest relevant basic diagnostic tests if applicable.
+5. DOCTOR REFERRAL: Clearly advise which specific specialist doctor they should visit.
+6. PRESENTATION (CRITICAL): Always use **bold** text for key medical terms, medicines, disease names, and important headings. ALWAYS use bullet points for listing causes, medicines, or advice. Keep the format highly structured and easy to read.`;
+
+            chatHistory.push({
+                role: "system", 
+                content: optimizedPrompt
+            });
+
+            const welcomeMessage = `नमस्ते **${currentUserName}**! मैं सृष्टि हूँ 🌸, आपकी हेल्थ और फार्मेसी असिस्टेंट。
+
+आप मुझसे पूछ सकते हैं:
+🔹 **बीमारी के लक्षण**
+🔹 **जनरल दवाइयों की जानकारी**
+🔹 **सही डॉक्टर का चुनाव**
+
+बताइए, आज मैं आपकी क्या मदद कर सकती हूँ? 💖`;
+            
+            chatHistory.push({
+                role: "assistant",
+                content: welcomeMessage
+            });
+
+            saveSession(); // Save initial state
+            renderHistory();
+        }
+
+        function handleChatEnter(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function scrollToBottom() {
+            const chatBox = document.getElementById('chatBox');
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function appendMessageToDOM(text, className) {
+            const chatBox = document.getElementById('chatBox');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${className}`;
+            
+            if (className.includes('error')) {
+                msgDiv.innerHTML = text;
+            } else {
+                let formattedText = text
+                    .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+                    .replace(/(?:\r\n|\r|\n|^)\s*[\*\-]\s+(.*)/g, '<br>🔹 $1')
+                    .replace(/(?:\r\n|\r|\n|^)\s*(\d+)\.\s+(.*)/g, '<br><b style="color:#f5576c;">$1.</b> $2')
+                    .replace(/\n/g, '<br>')
+                    .replace(/^(<br>)+/, '');
+                
+                msgDiv.innerHTML = formattedText;
+            }
+            
+            chatBox.appendChild(msgDiv);
+        }
+
+        async function sendMessage() {
+            const inputField = document.getElementById('userInput');
+            const userText = inputField.value.trim();
+            const typingIndicator = document.getElementById('typing');
+
+            if (!userText) return;
+
+            appendMessageToDOM(userText, 'user-msg');
+            inputField.value = '';
+            typingIndicator.style.display = 'block';
+            scrollToBottom();
+
+            chatHistory.push({
+                role: "user",
+                content: userText
+            });
+            saveSession(); // Save after user message
+
+            if (chatHistory.length > 11) {
+                chatHistory.splice(1, 2);
+                saveSession(); // Save after truncation
+            }
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${GROQ_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: "llama-3.1-8b-instant",
+                        messages: chatHistory,
+                        temperature: 0.7
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    const exactError = data.error ? data.error.message : "API Error";
+                    throw new Error(exactError);
+                }
+
+                const botReply = data.choices[0].message.content;
+
+                typingIndicator.style.display = 'none';
+                appendMessageToDOM(botReply, 'bot-msg');
+                
+                chatHistory.push({
+                    role: "assistant",
+                    content: botReply
+                });
+                saveSession(); // Save after bot reply
+                scrollToBottom();
+
+            } catch (error) {
+                typingIndicator.style.display = 'none';
+                
+                let errorHTML = `<b>❌ एरर:</b><br>${error.message}`;
+                appendMessageToDOM(errorHTML, 'message error-msg');
+                console.error(error);
+                
+                chatHistory.pop();
+                saveSession();
+            }
+        }
+    </script>
+</body>
+</html>
